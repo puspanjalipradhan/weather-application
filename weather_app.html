@@ -1,0 +1,30 @@
+<html>
+	<script>
+		function fetchCities(){
+			let cityPrefix = document.getElementById("cityPrefix").value;
+			let xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function (){
+				if(this.readyState==4 && this.status==200){
+					document.getElementById("cityResults").innerHTML = "";
+					let response = JSON.parse(this.responseText);
+					let parsedResponse = parseResponse(response);
+					document.getElementById("cityResults").innerHTML = parsedResponse;
+				}
+			};
+			xhttp.open("GET", "http://localhost:8080/weather/city?cityPrefix="+cityPrefix, true);
+			xhttp.send();
+		}
+
+		function parseResponse(cities){
+			return cities.reduce((x,y)=>x+"<br/>"+y)
+		}
+
+	</script>
+	<body>
+		<input type="text" id="cityPrefix"/> 
+		<input type="button" value="search" onClick="fetchCities()"/> 
+		<div id="cityResults">
+
+		</div>
+	</body>
+</html>

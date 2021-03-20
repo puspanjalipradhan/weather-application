@@ -1,0 +1,43 @@
+<html>
+<script>
+		function fetchCities(){
+			let cityPrefix = document.getElementById("cityPrefix").value;
+			if(cityPrefix.length==0){
+				alert("Please enter a Prefix to be able to search the city");
+				return;
+			}
+			let xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function (){
+				if(this.readyState==4 && this.status==200){
+					reset();
+					let response = JSON.parse(this.responseText);
+					if(response.length==0){
+						return;
+					}
+
+					let parsedResponse = parseResponse(response);
+					document.getElementById("cityResults").innerHTML = parsedResponse;
+				}else if(this.readyState==4 && this.status==500){
+					reset();
+					document.getElementById("cityResults").innerHTML = "There is an error in the server"
+				}
+			};
+			xhttp.open("GET", "http://localhost:8080/weather/city?cityPrefix="+cityPrefix, true);
+			xhttp.send();
+		}
+
+		function reset(){
+			document.getElementById("cityResults").innerHTML = "";
+
+		}
+		function parseResponse(cities){
+			return cities.reduce((x,y)=>x+"<br/>"+y)
+		}
+
+	</script>
+<body>
+Enter The City Name : <input type="text" id="cityPrefix"/>
+<input type="button" value="search" onClick="fetchCities()"/>
+<div id="cityResults"/>
+</body>
+</html>
